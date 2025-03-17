@@ -11,9 +11,10 @@ steps = [
     step('''CREATE TABLE public.users (
   id serial4 NOT NULL,
   login varchar(50) NOT NULL,
-  "password" varchar(255) NOT NULL,
+  "password" varchar(50) NOT NULL,
   registration_date timestamp DEFAULT CURRENT_TIMESTAMP NULL,
-  CONSTRAINT login CHECK (TRIM(BOTH FROM login) <> '' AND login NOT LIKE '% %' AND login ~ '^[A-Za-z0-9]+$' AND LENGTH(login) >= 6),
+  CONSTRAINT login CHECK (TRIM(BOTH FROM login) <> '' AND login NOT LIKE '% %' AND login ~ '^[A-Za-z0-9_]+$' AND 
+  LENGTH(login) >= 6),
   CONSTRAINT password CHECK (TRIM(BOTH FROM password) <> '' AND password NOT LIKE '% %'),
   CONSTRAINT users_login_key UNIQUE (login),
   CONSTRAINT users_pkey PRIMARY KEY (id)
@@ -25,8 +26,8 @@ RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
 BEGIN
-    IF LENGTH(NEW.password) < 6 THEN
-        RAISE EXCEPTION 'Password must be at least 6 characters long.';
+    IF LENGTH(NEW.password) < 6 OR LENGTH(NEW.password) > 50 THEN
+        RAISE EXCEPTION 'The password must contain from 6 to 50 characters.';
     END IF;
     IF NEW.password !~ '[0-9]' THEN
         RAISE EXCEPTION 'Password must contain at least one digit.';
@@ -37,7 +38,7 @@ BEGIN
     IF NEW.password !~ '[a-z]' THEN
         RAISE EXCEPTION 'Password must contain at least one lowercase letter.';
     END IF;
-    IF NEW.password !~ '[@#$&~`!<>,.?/\\|*%]' THEN  
+    IF NEW.password !~ '[@#$&~`!<>,.?/|*%_\\-]' THEN  
         RAISE EXCEPTION 'Password must contain at least one special character.';
     END IF;
     RETURN NEW;

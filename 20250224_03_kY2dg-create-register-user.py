@@ -19,19 +19,11 @@ steps = [
     DECLARE
         user_id INTEGER;
     BEGIN
-        -- Приведение логина к нижнему регистру и имён к нужному формату
         INSERT INTO users (login, password) 
         VALUES (LOWER(TRIM(p_login)), TRIM(p_password)) 
         RETURNING id INTO user_id;
-
         INSERT INTO accounts (user_id, family, name, patronymic, birth_date) 
-        VALUES (
-            user_id, 
-            INITCAP(TRIM(p_family)), 
-            INITCAP(TRIM(p_name)), 
-            INITCAP(TRIM(p_patronymic)), 
-            p_birth_date
-        );
+        VALUES (user_id, INITCAP(TRIM(p_family)), INITCAP(TRIM(p_name)), INITCAP(TRIM(p_patronymic)), p_birth_date);
     EXCEPTION
         WHEN unique_violation THEN 
             RAISE EXCEPTION 'Login "%", already exists.', LOWER(TRIM(p_login)); 
@@ -41,7 +33,7 @@ steps = [
                 RAISE EXCEPTION 'You cannot be older than 130 years or younger than 1 month. Please try again.';
                 ROLLBACK;
             ELSIF SQLERRM LIKE '%family%' THEN
-                RAISE EXCEPTION 'Family name cannot be empty and must consist of letters.';
+                RAISE EXCEPTION 'Family cannot be empty and must consist of letters.';
                 ROLLBACK;
             ELSIF SQLERRM LIKE '%name%' THEN
                 RAISE EXCEPTION 'Name cannot be empty and must consist of letters.';
