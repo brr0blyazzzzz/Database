@@ -25,6 +25,22 @@ def get_positive_int_input(prompt):
         else:
             return int(value)
 
+
+def print_user_tags_with_titles(user_id):
+    cursor.execute("SELECT tags FROM public.accounts WHERE id = %s;", (user_id,))
+    result = cursor.fetchone()
+    if result and result[0]:
+        tags = result[0]
+        tags_ids = ','.join(map(str, tags))
+        cursor.execute(f"SELECT id, title FROM public.tags WHERE id IN ({tags_ids});")
+        tag_titles = cursor.fetchall()
+        tags_dict = {tag[0]: tag[1] for tag in tag_titles}
+        tags_output = ' '.join(f"({tag_id}){tags_dict[tag_id]}" for tag_id in tags)
+        print(f"Теги для аккаунта с user_id {user_id}: {tags_output}; ")
+    else:
+        print("Для данного пользователя нет тегов.")
+
+
 def check_user_exists(user_id):
     cursor.execute("SELECT EXISTS(SELECT 1 FROM public.accounts WHERE id = %s);", (user_id,))
     exists = cursor.fetchone()[0]
@@ -37,6 +53,11 @@ def check_tag_exists(tag_id):
     exists = cursor.fetchone()[0]
     if not exists:
         print(f"Тег с ID {tag_id} не существует.")
+    return exists
+
+def check_tag_exists_for_user(user_id, tag_id):
+    cursor.execute("SELECT EXISTS (SELECT 1 FROM public.accounts WHERE id = %s AND %s = ANY(tags));", (user_id, tag_id))
+    exists = cursor.fetchone()[0]
     return exists
 
 
@@ -119,23 +140,21 @@ while True:
     if choice == '1':
         user_id = get_positive_int_input("Введите user_id аккаунта: ")
         if check_user_exists(user_id):
+            print_user_tags_with_titles(user_id)
             tag_id = get_positive_int_input("Введите id тега: ")
             if check_tag_exists(tag_id):
-                add_tag_to_account(user_id, tag_id)
+                if not check_tag_exists_for_user(user_id, tag_id):
+                    add_tag_to_account(user_id, tag_id)
+                else:
+                    print(f"Тег c ID {tag_id} у пользователя с user_id {user_id} уже существует.")
+
+
     elif choice == '2':
         user_id = get_positive_int_input("Введите user_id аккаунта: ")
         if check_user_exists(user_id):
-            cursor.execute("SELECT tags FROM public.accounts WHERE id = %s;", (user_id,))
-            result = cursor.fetchone()
-            if result and result[0]:
-                tags = result[0]
-                tags_string = ' '.join(map(str, tags))
-                print(f"Теги для аккаунта с user_id {user_id}: {tags_string}")
-            else:
-                print("Для данного пользователя нет тегов.")
-                continue
+            print_user_tags_with_titles(user_id)
             tag_id = get_positive_int_input("Введите id тега для удаления: ")
-            if tag_id in tags:
+            if check_tag_exists_for_user(user_id,tag_id):
                 remove_tag_from_account(user_id, tag_id)
             else:
                 print("Такого тега у пользователя нет.")

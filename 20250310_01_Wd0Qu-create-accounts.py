@@ -23,8 +23,8 @@ steps = [
     """),
     step("""
    INSERT INTO public.accounts (family, name, patronymic, birth_date, tags) VALUES
-       ('Pugacheva', 'Alla', 'Borisovna', '1964-09-08', '{3,2,1}'),
-       ('Putin', 'Vladimir', 'Vladimirovich', '2020-08-07', '{1,4,6}'),
+       ('Pugacheva', 'Alla', 'Borisovna', '1964-09-08', '{5,6}'),
+       ('Putin', 'Vladimir', 'Vladimirovich', '2020-08-07', '{1,3}'),
        ('Alexeeva', 'Alena', 'Vladimirovna', '2005-08-09', '{2,5}'),
        ('Boika', 'Mia', NULL, '1994-12-14', '{1,6,4}'),
        ('Satoru', 'Gojo', NULL, '1900-10-23', '{1,2,3,4,5,6}'),
