@@ -16,11 +16,15 @@ steps = [
         CONSTRAINT unique_title UNIQUE (title));"""),
     step("""
     INSERT INTO public.tags (title) VALUES
-        ('Good'),
         ('Average'),
         ('Excellent'),
-        ('Satisfactory'),
-        ('Unsatisfactory'),
-        ('Bad');
+        ('Bad'),
+        ('Nice'),
+        ('Stupid'),
+        ('Clever'),
+        ('Funny'),
+        ('Sad'),
+        ('Gromko Chavkaet'),
+        ('Sigma');
         """)
 ]
