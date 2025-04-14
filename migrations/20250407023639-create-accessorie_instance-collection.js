@@ -5,7 +5,7 @@ module.exports = {
    * @returns {Promise<void>}
    */
   async up(db, client) {
-    await db.createCollection("accessorie_instance", {
+    await db.createCollection("accessorie-instance", {
       validator: {
         $jsonSchema: {
           bsonType: "object",
@@ -27,7 +27,7 @@ module.exports = {
       }
     });
 
-    await db.collection("accessorie_instance").insertMany([
+    await db.collection("accessorie-instance").insertMany([
       {color: "Черный", accessorie_id:10},
       {color: "Красный", accessorie_id:1},
       {color: "Черный", accessorie_id:3},
