@@ -9,7 +9,7 @@ module.exports = {
       validator: {
         $jsonSchema: {
           bsonType: "object",
-          required: ["color", "accesstorie_id"],
+          required: ["color", "accessorie_id"],
           properties: {
             color: {
               bsonType: "string",
@@ -17,7 +17,7 @@ module.exports = {
               pattern: "^[A-Za-zА-Яа-яЁё\\s\\-().,:;]+$", 
               description: "Цвет экземпляра"
             },
-            accesstorie_id: {
+            accessorie_id: {
               bsonType: "int",
               minimum: 1,
               description: "Связь с аксессуаром"
@@ -28,16 +28,16 @@ module.exports = {
     });
 
     await db.collection("accessorie_instance").insertMany([
-      {color: "Черный", accesstorie_id:10},
-      {color: "Красный", accesstorie_id:1},
-      {color: "Черный", accesstorie_id:3},
-      {color: "Черный", accesstorie_id:4},
-      {color: "Желтый",  accesstorie_id:1},
-      {color: "Желтый", accesstorie_id:7},
-      {color: "Голубой", accesstorie_id:6},
-      {color: "Белый", accesstorie_id:5},
-      {color: "Красный", accesstorie_id:10},
-      {color: "Оранжевый", accesstorie_id:8}
+      {color: "Черный", accessorie_id:10},
+      {color: "Красный", accessorie_id:1},
+      {color: "Черный", accessorie_id:3},
+      {color: "Черный", accessorie_id:4},
+      {color: "Желтый",  accessorie_id:1},
+      {color: "Желтый", accessorie_id:7},
+      {color: "Голубой", accessorie_id:6},
+      {color: "Белый", accessorie_id:5},
+      {color: "Красный", accessorie_id:10},
+      {color: "Оранжевый", accessorie_id:8}
     ]);
   },
 
