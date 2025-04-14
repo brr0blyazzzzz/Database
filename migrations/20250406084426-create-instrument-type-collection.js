@@ -11,7 +11,7 @@ module.exports = {
           bsonType: "object",
           required: ["instrument_id", "accessorie_id"],
           properties: {
-            type_id: {
+            accessorie_id: {
               bsonType: "int",
               minimum: 1,
               description: "Связь с аксессуаром"

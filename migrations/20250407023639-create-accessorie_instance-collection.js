@@ -15,7 +15,7 @@ module.exports = {
               bsonType: "string",
               minLength: 3, 
               pattern: "^[A-Za-zА-Яа-яЁё\\s\\-().,:;]+$", 
-              description: "Цвет экземпляра"
+              description: "Цвет экземпляра аксессуара"
             },
             accessorie_id: {
               bsonType: "int",
