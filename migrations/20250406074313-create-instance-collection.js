@@ -9,7 +9,7 @@ module.exports = {
       validator: {
         $jsonSchema: {
           bsonType: "object",
-          required: ["color","orientation", "instrument_id"],
+          required: ["color","orientation", "instrument"],
           properties: {
             color: {
               bsonType: "string",
@@ -23,35 +23,34 @@ module.exports = {
               minLength: 5,
               description: "Ориентация экземпляра"
             },
-            instrument_id: {
-              bsonType: "int",
-              minimum: 1,
-              description: "Связь с инструментом"
+            instrument: {
+              bsonType: "object",
+              required: ["$ref", "$id"],
+              properties: {
+                $ref: { bsonType: "string"},
+                $id: { bsonType: "objectId"}
+              },
+              description: "Ссылка на инструмент"
             }
           }
         }
       }
     });
-
+    const instruments = await db.collection("instrument").find().toArray();
     await db.collection("instance").insertMany([
-      {color: "Черный", orientation: "Правый", instrument_id:10},
-      {color: "Красный", orientation: "Правый", instrument_id:1},
-      {color: "Черный", orientation: "Любой", instrument_id:3},
-      {color: "Черный", orientation: "Любой", instrument_id:4},
-      {color: "Желтый", orientation: "Правый", instrument_id:1},
-      {color: "Желтый", orientation: "Любой", instrument_id:7},
-      {color: "Голубой", orientation: "Любой", instrument_id:6},
-      {color: "Белый", orientation: "Любой", instrument_id:5},
-      {color: "Красный",orientation: "Левый", instrument_id:10},
-      {color: "Оранжевый", orientation: "Левый", instrument_id:8}
+      {color: "Черный", orientation: "Правый", instrument: {$ref: "instrument", $id: instruments[0]._id}},
+      {color: "Красный", orientation: "Правый", instrument: {$ref: "instrument", $id: instruments[1]._id}},
+      {color: "Черный", orientation: "Любой", instrument: {$ref: "instrument", $id: instruments[2]._id}},
+      {color: "Черный", orientation: "Любой", instrument: {$ref: "instrument", $id: instruments[3]._id}},
+      {color: "Желтый", orientation: "Правый", instrument: {$ref: "instrument", $id: instruments[4]._id}},
+      {color: "Желтый", orientation: "Любой", instrument: {$ref: "instrument", $id: instruments[5]._id}},
+      {color: "Голубой", orientation: "Любой", instrument: {$ref: "instrument", $id: instruments[6]._id}},
+      {color: "Белый", orientation: "Любой", instrument: {$ref: "instrument", $id: instruments[7]._id}},
+      {color: "Красный", orientation: "Левый", instrument: {$ref: "instrument", $id: instruments[8]._id}},
+      {color: "Оранжевый", orientation: "Левый", instrument: {$ref: "instrument", $id: instruments[9]._id}}
     ]);
   },
 
-  /**
-   * @param db {import('mongodb').Db}
-   * @param client {import('mongodb').MongoClient}
-   * @returns {Promise<void>}
-   */
   async down(db, client) {
     await db.collection("instance").drop(); 
   }

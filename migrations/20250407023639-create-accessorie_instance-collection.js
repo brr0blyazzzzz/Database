@@ -5,11 +5,11 @@ module.exports = {
    * @returns {Promise<void>}
    */
   async up(db, client) {
-    await db.createCollection("accessorie-instance", {
+    await db.createCollection("accessorie_instance", {
       validator: {
         $jsonSchema: {
           bsonType: "object",
-          required: ["color", "accessorie_id"],
+          required: ["color", "accessorie"],
           properties: {
             color: {
               bsonType: "string",
@@ -17,27 +17,31 @@ module.exports = {
               pattern: "^[A-Za-zА-Яа-яЁё\\s\\-().,:;]+$", 
               description: "Цвет экземпляра аксессуара"
             },
-            accessorie_id: {
-              bsonType: "int",
-              minimum: 1,
-              description: "Связь с аксессуаром"
+            accessorie: {
+              bsonType: "object",
+              required: ["$ref", "$id"],
+              properties: {
+                $ref: { bsonType: "string" },
+                $id: { bsonType: "objectId" }
+              },
+              description: "Ссылка на аксессуар"
             }
           }
         }
       }
     });
-
-    await db.collection("accessorie-instance").insertMany([
-      {color: "Черный", accessorie_id:10},
-      {color: "Красный", accessorie_id:1},
-      {color: "Черный", accessorie_id:3},
-      {color: "Черный", accessorie_id:4},
-      {color: "Желтый",  accessorie_id:1},
-      {color: "Желтый", accessorie_id:7},
-      {color: "Голубой", accessorie_id:6},
-      {color: "Белый", accessorie_id:5},
-      {color: "Красный", accessorie_id:10},
-      {color: "Оранжевый", accessorie_id:8}
+    const accessories = await db.collection("accessorie").find().toArray();
+    await db.collection("accessorie_instance").insertMany([
+      {color: "Черный", accessorie: {$ref: "accessorie", $id: accessories[0]._id}},
+      {color: "Красный", accessorie: {$ref: "accessorie", $id: accessories[1]._id}},
+      {color: "Черный", accessorie: {$ref: "accessorie", $id: accessories[2]._id}},
+      {color: "Черный", accessorie: {$ref: "accessorie", $id: accessories[3]._id}},
+      {color: "Желтый", accessorie: {$ref: "accessorie", $id: accessories[4]._id}},
+      {color: "Желтый", accessorie: {$ref: "accessorie", $id: accessories[5]._id}},
+      {color: "Голубой", accessorie: {$ref: "accessorie", $id: accessories[6]._id}},
+      {color: "Белый", accessorie: {$ref: "accessorie", $id: accessories[7]._id}},
+      {color: "Красный", accessorie: {$ref: "accessorie", $id: accessories[8]._id}},
+      {color: "Оранжевый", accessorie: {$ref: "accessorie", $id: accessories[9]._id}}
     ]);
   },
 

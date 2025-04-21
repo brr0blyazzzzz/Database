@@ -37,8 +37,7 @@ module.exports = {
         }
       }
     });
-
-    await db.collection("accessorie").insertMany([
+    const accessories = await db.collection("accessorie").insertMany([
       {title: "Чехол для гитары",description: "Чехол для защиты гитары от повреждений.",price: 1500.05,material: "Нейлон"},
       {title: "Струны для скрипки",description: "Набор струн для скрипки, обеспечивающий хороший звук.",price: 800.00,material: "Нейлон"},
       {title: "Тюнер для гитары",description: "Прибор для настройки гитары.",price: 1200.00,material: "Пластик"},

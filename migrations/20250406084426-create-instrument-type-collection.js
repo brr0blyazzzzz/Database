@@ -5,39 +5,47 @@ module.exports = {
    * @returns {Promise<void>}
    */
   async up(db, client) {
-    await db.createCollection("instrument-accessorie", {
+    await db.createCollection("instrument_accessorie", {
       validator: {
         $jsonSchema: {
           bsonType: "object",
-          required: ["instrument_id", "accessorie_id"],
+          required: ["instrument", "accessorie"],
           properties: {
-            accessorie_id: {
-              bsonType: "int",
-              minimum: 1,
-              description: "Связь с аксессуаром"
+            instrument: {
+              bsonType: "object",
+              required: ["$ref", "$id"],
+              properties: {
+                $ref: { bsonType: "string"},
+                $id: { bsonType: "objectId"}
+              },
+              description: "Ссылка на инструмент"
             },
-            instrument_id: {
-              bsonType: "int",
-              minimum: 1,
-              description: "Связь с инструментом"
+            accessorie: {
+              bsonType: "object",
+              required: ["$ref", "$id"],
+              properties: {
+                $ref: { bsonType: "string"},
+                $id: { bsonType: "objectId"}
+              },
+              description: "Ссылка на аксессуар"
             }
           }
         }
       }
     });
-
-    await db.collection("instrument-accessorie").insertMany([
-       {accessorie_id: 1, instrument_id: 1 },
-       {accessorie_id: 1, instrument_id: 2 },
-       {accessorie_id: 8, instrument_id: 3},
-       {accessorie_id: 6, instrument_id: 4},
-       {accessorie_id: 8, instrument_id: 5},
-       {accessorie_id: 1, instrument_id: 5},
-       {accessorie_id: 3, instrument_id: 6},
-       {accessorie_id: 4, instrument_id: 7},
-       {accessorie_id: 3, instrument_id: 9},
-       {accessorie_id: 8, instrument_id: 9}
-
+    const instruments = await db.collection("instrument").find().toArray();
+    const accessories = await db.collection("accessorie").find().toArray();
+    await db.collection("instrument_accessorie").insertMany([
+      {instrument: {$ref: "instrument", $id: instruments[0]._id}, accessorie: {$ref: "accessorie", $id: accessories[0]._id}},
+      {instrument: {$ref: "instrument", $id: instruments[1]._id}, accessorie: {$ref: "accessorie", $id: accessories[0]._id}},
+      {instrument: {$ref: "instrument", $id: instruments[2]._id}, accessorie: {$ref: "accessorie", $id: accessories[2]._id}},
+      {instrument: {$ref: "instrument", $id: instruments[3]._id}, accessorie: {$ref: "accessorie", $id: accessories[3]._id}},
+      {instrument: {$ref: "instrument", $id: instruments[4]._id}, accessorie: {$ref: "accessorie", $id: accessories[2]._id}},
+      {instrument: {$ref: "instrument", $id: instruments[4]._id}, accessorie: {$ref: "accessorie", $id: accessories[0]._id}},
+      {instrument: {$ref: "instrument", $id: instruments[5]._id}, accessorie: {$ref: "accessorie", $id: accessories[6]._id}},
+      {instrument: {$ref: "instrument", $id: instruments[6]._id}, accessorie: {$ref: "accessorie", $id: accessories[7]._id}},
+      {instrument: {$ref: "instrument", $id: instruments[8]._id}, accessorie: {$ref: "accessorie", $id: accessories[6]._id}},
+      {instrument: {$ref: "instrument", $id: instruments[8]._id}, accessorie: {$ref: "accessorie", $id: accessories[2]._id}}
     ]);
   },
 
@@ -47,6 +55,6 @@ module.exports = {
    * @returns {Promise<void>}
    */
   async down(db, client) {
-    await db.collection("instrument-accessorie").drop(); 
+    await db.collection("instrument_accessorie").drop(); 
   }
 };

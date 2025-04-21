@@ -13,7 +13,6 @@ module.exports = {
           properties: {
             title: {
               bsonType: "string",
-              minLength: 2,
               description: "Название инструмента"
             },
             manufacturer: {
@@ -22,12 +21,10 @@ module.exports = {
             },
             neck_material: {
               bsonType: "string",
-              minLength: 3,
               description: "Материал основы инструмента"
             },
             case_material: {
               bsonType: "string",
-              minLength: 3,
               description: "Материал корпуса инструмента"
             },
             model: {
@@ -36,14 +33,14 @@ module.exports = {
             },
             price: {
               bsonType: "number",
-              minimum: 1.00,
+              minimum: 0.00,
               description: "Цена инструмента"
             },
           }
         }
       }
     });
-
+    
     await db.collection("instrument").insertMany([
       { title: "Акустическая гитара", manufacturer: "YAMAHA", neck_material: "Клён", case_material: "Тополь", model: "F310", price: 15000.00 },
       { title: "Бас-гитара", manufacturer: "IBANEZ", neck_material: "Буковое дерево", case_material: "Палисандр", model: "GSR200B-WNF", price: 18000.99 },
@@ -58,11 +55,6 @@ module.exports = {
     ]);
   },
 
-  /**
-   * @param db {import('mongodb').Db}
-   * @param client {import('mongodb').MongoClient}
-   * @returns {Promise<void>}
-   */
   async down(db, client) {
     await db.collection("instrument").drop();
   }
