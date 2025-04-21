@@ -27,8 +27,8 @@ module.exports = {
               bsonType: "object",
               required: ["$ref", "$id"],
               properties: {
-                $ref: { bsonType: "string"},
-                $id: { bsonType: "objectId"}
+                $ref: { bsonType: "string", description: "Коллекция, на которую ссылается" },
+                $id: { bsonType: "objectId", description: "ID документа в коллекции" }
               },
               description: "Ссылка на инструмент"
             }
